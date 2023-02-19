@@ -8,6 +8,10 @@ export default function HomeScreen({ navigation }) {
           title="Go to Details"
           onPress={() => navigation.navigate('Details')}
         />
+        <Button
+          title="Go to Barcode"
+          onPress={() => navigation.navigate('Barcode')}
+        />
       </View>
     );
   }
