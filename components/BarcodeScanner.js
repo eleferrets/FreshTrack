@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, Button } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 
-export default function BarcodeScanner() {
+export default function BarcodeScanner({navigation}) {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
 
@@ -14,10 +14,15 @@ export default function BarcodeScanner() {
 
     getBarCodeScannerPermissions();
   }, []);
-
+const manualEntry = () =>{
+    navigation.navigate('Details')
+}
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
-    alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+    
+    // alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+    navigation.navigate('Details')
+    setScanned(false);
   };
 
   if (hasPermission === null) {
@@ -33,7 +38,10 @@ export default function BarcodeScanner() {
         onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
         style={StyleSheet.absoluteFillObject}
       />
-      {scanned && <Button title={'Tap to Scan Again'} onPress={() => setScanned(false)} />}
+       <View style={styles.footerContainer}>
+        <Button title={"Enter details manually"} onPress={manualEntry} />
+      </View>
+      {/* {scanned && <Button title={'Tap to Scan Again'} onPress={() => setScanned(false)} />} */}
     </View>
   );
 }
@@ -43,5 +51,9 @@ const styles = StyleSheet.create({
       backgroundColor: '#fff',
       alignItems: 'center',
       justifyContent: 'center',
+    },
+    footerContainer: {
+        flex: 1 / 3,
+        alignItems: 'center',
     },
   });
