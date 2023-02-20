@@ -25,7 +25,7 @@ export default function DetailsScreen({navigation}) {
     navigation.navigate('Home', {
       name: name,
       category: category,
-      date: date
+      date: date.toString()
     })
   }
   const styles = StyleSheet.create({
@@ -37,6 +37,7 @@ export default function DetailsScreen({navigation}) {
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Input placeholder="Name" value={name} onChangeText={(text) =>setName(text)}/>
       <Input placeholder="Category" value={category} onChangeText={(text) =>setCategory(text)}/>
+      {/* Add a profile option as a dropdown of all the profiles added */}
         <Button title="Show Dates" onPress={showDatePicker} />
       <DateTimePickerModal
         isVisible={isDatePickerVisible}
