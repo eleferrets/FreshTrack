@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { View, StyleSheet, Button } from 'react-native';
 import {Input} from 'react-native-elements'
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function DetailsScreen({navigation}) {
   const [name, setName] = useState("");
@@ -22,11 +23,25 @@ export default function DetailsScreen({navigation}) {
     hideDatePicker();
   };
   const register = () => {
-    navigation.navigate('Home', {
+    const dateString = date.toString();
+    const entryObject = {
       name: name,
       category: category,
-      date: date.toString()
-    })
+      date: dateString
+    }
+    let keyName = name+dateString;
+    setObjectValue(keyName, entryObject);
+    navigation.navigate('Home', entryObject);
+  }
+  const setObjectValue = async (key, value) => {
+    try {
+      const jsonValue = JSON.stringify(value)
+      await AsyncStorage.setItem(key, jsonValue)
+    } catch(e) {
+      // save error
+    }
+  
+    console.log('Done.')
   }
   const styles = StyleSheet.create({
     datePickerStyle: {
