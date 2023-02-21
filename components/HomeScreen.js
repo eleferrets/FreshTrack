@@ -1,5 +1,6 @@
-import { Text, View, Button, StyleSheet } from 'react-native';
-
+import { Text, View, Button, StyleSheet, ActivityIndicator } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useEffect, useState } from 'react';
 export default function HomeScreen({ route, navigation }) {
     const styles = StyleSheet.create({
         container: {
@@ -12,20 +13,61 @@ export default function HomeScreen({ route, navigation }) {
           marginTop: 5,
         }
       });
-      const data = [];
-      if (route.params) {
-        // const {name} = route.params;
-        // console.log(route.params)
-        data.push(route.params);
+      const getAllKeys = async () => {
+        let keys = []
+        try {
+          keys = await AsyncStorage.getAllKeys()
+        } catch(e) {
+          // read key error
+        }
+      
+        console.log(keys);
+        keys.map( async (key) => {
+                let object = await getMyObject(key);
+                console.log(object)
+                data.push(object);
+        })
+        // example console.log result:
+        // ['@MyApp_user', '@MyApp_key']
       }
+      const getMyObject = async (key) => {
+        try {
+          const jsonValue = await AsyncStorage.getItem(key)
+          return jsonValue != null ? JSON.parse(jsonValue) : null
+        } catch(e) {
+          // read error
+        }
+      
+        console.log('Done.')
+      }
+      const [data, setData] = useState(null);
+
+      // Function to load all objects from local storage
+      const loadAllObjects = async () => {
+        try {
+          const keys = await AsyncStorage.getAllKeys();
+          const objects = await AsyncStorage.multiGet(keys);
+          return objects.map(([, value]) => (JSON.parse(value) ));
+        } catch (error) {
+          console.error('Error loading objects: ', error);
+          return null;
+        }
+      };
+      useEffect(() => {
+        const loadObjects = async () => {
+        const data = await loadAllObjects();
+        setData(data);
+        };
+        loadObjects();
+      }, []);
 
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        { data.length == 0 && <Text>Nothing here yet!</Text>}
-        {data.length > 0 && data.map((person) => {
+        { data == null && <Text>Nothing here yet!</Text>}
+        {data != null && data.map((person) => {
         return (
           <View>
-            <Text style={styles.item} key={person.name}>{person.name}</Text>
+            <Text style={styles.item} key={person.date}>{person.name}</Text>
           </View>
         );
       })}
