@@ -2,6 +2,25 @@ import { useState } from 'react';
 import { View, StyleSheet, Button } from 'react-native';
 import {Input} from 'react-native-elements'
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const getData = async () => {
+  try {
+    const jsonValue = await AsyncStorage.getItem('@food_data')
+    return jsonValue != null ? JSON.parse(jsonValue) : [];
+  } catch(e) {
+    // error reading value
+  }
+}
+
+const storeData = async (value) => {
+  try {
+    const jsonValue = JSON.stringify(value)
+    await AsyncStorage.setItem('@food_data', jsonValue)
+  } catch (e) {
+    console.log('Failed to save data')
+  }
+}
 
 export default function DetailsScreen({navigation}) {
   const [name, setName] = useState("");
@@ -22,11 +41,19 @@ export default function DetailsScreen({navigation}) {
     hideDatePicker();
   };
   const register = () => {
-    navigation.navigate('Home', {
-      name: name,
-      category: category,
-      date: date.toString()
-    })
+    getData().then(value => {
+      let arr = value;
+      arr.push({
+            name: name,
+            category: category,
+            date: date.toString()
+      });
+      //console.log(arr);
+
+      storeData(arr).then(() => {
+          navigation.navigate('Home');
+      });
+    });
   }
   const styles = StyleSheet.create({
     datePickerStyle: {
