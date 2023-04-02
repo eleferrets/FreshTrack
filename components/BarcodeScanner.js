@@ -19,10 +19,22 @@ const manualEntry = () =>{
 }
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
+    const uri = 'https://api.barcodelookup.com/v3/products?barcode='+data+'&formatted=y&key=43eseh8rkbqjmsvwab61hbxybqkw21';
+    fetch(uri).then(res => res.json()).then(data => {
+        navigation.navigate('Details', {itemData: {
+                name: data.products[0].title,
+                category: '',
+                date: ''
+        }});
+        //setScanned(false);
+    }).catch(error => {
+        console.log('Barcode API error: LIMIT EXCEEDED');
+        console.log(error);
+        console.log('URI: ', uri);
+    });
     
     // alert(`Bar code with type ${type} and data ${data} has been scanned!`);
-    navigation.navigate('Details')
-    setScanned(false);
+
   };
 
   if (hasPermission === null) {

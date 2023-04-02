@@ -40,7 +40,7 @@ const Item = props => {
 };
 
 export default function HomeScreen({ route, navigation }) {
-    const [foodData, setFoodData] = useState([{category: "", date: "", name: "Nothing"}]);
+    const [foodData, setFoodData] = useState([{category: "", date: "", name: ""}]);
 
     const styles = StyleSheet.create({
         container: {
@@ -70,7 +70,7 @@ export default function HomeScreen({ route, navigation }) {
       
         <Button
           title="Add new"
-          onPress={() => navigation.navigate('Details')}
+          onPress={() => navigation.navigate('Details', {itemData: {name: '', category: '', date: ''}})}
         />
         <Button
           title="Go to Barcode"

@@ -22,10 +22,11 @@ const storeData = async (value) => {
   }
 }
 
-export default function DetailsScreen({navigation}) {
-  const [name, setName] = useState("");
-  const [category, setCategory] = useState("")
-  const [date, setDate] = useState("");
+export default function DetailsScreen({route, navigation}) {
+  const {itemData} = route.params;
+  const [name, setName] = useState(itemData.name);
+  const [category, setCategory] = useState(itemData.category)
+  const [date, setDate] = useState(itemData.date);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
   const showDatePicker = () => {
