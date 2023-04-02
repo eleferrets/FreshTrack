@@ -2,10 +2,29 @@ import { Text, View, Button, StyleSheet } from 'react-native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useState} from "react";
 
+const storeData = async (value) => {
+    try {
+        const jsonValue = JSON.stringify(value)
+        await AsyncStorage.setItem('@food_data', jsonValue)
+    } catch (e) {
+        console.log('Failed to save data')
+    }
+}
+const deleteItem = async (id) => {
+    getData().then(data => {
+        data.splice(id, 1);
+        storeData(data);
+    });
+}
+
 const Item = props => {
     return(
         <View>
-            <Text>{props.name}</Text>
+            <Text>
+                <Text>{props.name}</Text>
+                <Button title={'Edit'} onPress={() => getData().then(data => props.nav.navigate('Edit', {itemID: props.id, itemData: data[props.id]}))}/>
+                <Button title={'Delete'} onPress={() => {deleteItem(props.id)}}/>
+            </Text>
         </View>
     );
 };
@@ -33,30 +52,23 @@ export default function HomeScreen({ route, navigation }) {
           marginTop: 5,
         }
       });
-      const data = [];
-      if (route.params) {
-        // const {name} = route.params;
-        //console.log(route.params)
-          // {"category": "sjjd", "date": "", "name": "shhd"}
-        data.push(route.params);
-        //console.log(data);
-      }
 
-      getData().then(value => {setFoodData(value)});
+    getData().then(value => {setFoodData(value)});
+
+    const getItems = () => {
+        let arr = [];
+        for (let i = 0; i < foodData.length; i ++) {
+            arr.push(<Item nav={navigation} id={i} key={i} name={foodData[i].name}/>);
+        }
+        return arr;
+    };
 
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        { foodData.length == 0 && <Text>Nothing here yet!</Text>}
-        {foodData.length > 0 && foodData.map((person) => {
-        return (
-          <View key={person.name}>
-            <Text style={styles.item} key={person.name}>{person.name}</Text>
-          </View>
-        );
-      })}
+          {getItems()}
       
         <Button
-          title="Go to Details"
+          title="Add new"
           onPress={() => navigation.navigate('Details')}
         />
         <Button

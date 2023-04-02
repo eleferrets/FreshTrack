@@ -72,7 +72,7 @@ export default function DetailsScreen({navigation}) {
         onConfirm={handleConfirm}
         onCancel={hideDatePicker}
       />
-      <Button title="Confirm" onPress={register}/>
+      <Button title="Save" onPress={register}/>
     </View>
   );
 }
