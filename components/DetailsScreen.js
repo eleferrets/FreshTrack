@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { View, StyleSheet, Button } from 'react-native';
 import {Input} from 'react-native-elements'
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {Text, Platform, DatePickerIOS, DatePickerAndroid } from 'react-native';
+import {Text, Platform } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const getData = async () => {
   try {
@@ -29,30 +30,16 @@ export default function DetailsScreen({route, navigation}) {
   const [name, setName] = useState(itemData.name);
   const [category, setCategory] = useState(itemData.category)
   const [date, setDate] = useState(new Date());
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
-  const showDatePicker = async () => {
-    if (Platform.OS === 'android') {
-      try {
-        const { action, year, month, day } = await DatePickerAndroid.open({
-          date: date,
-        });
-        if (action !== DatePickerAndroid.dismissedAction) {
-          const selectedDate = new Date(year, month, day);
-          setDate(selectedDate);
-        }
-      } catch ({ code, message }) {
-        console.warn('Cannot open date picker', message);
-      }
-    } else if (Platform.OS === 'ios') {
-      // For iOS, use the DatePickerIOS component
-      return (
-        <DatePickerIOS
-          date={date}
-          onDateChange={(newDate) => setDate(newDate)}
-        />
-      );
-    }
+  const onDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShowDatePicker(Platform.OS === 'ios');
+    setDate(currentDate);
+  };
+
+  const showPicker = () => {
+    setShowDatePicker(true);
   };
 
   const register = () => {
@@ -81,7 +68,17 @@ export default function DetailsScreen({route, navigation}) {
       <Input placeholder="Category" value={category} onChangeText={(text) =>setCategory(text)}/>
       {/* Add a profile option as a dropdown of all the profiles added */}
         {/* <Button title="Show Dates" onPress={showDatePicker} /> */}
-      <Button title="Select Date" onPress={showDatePicker} />
+        <Button title="Select Date" onPress={showPicker} />
+        {showDatePicker && (
+        <DateTimePicker
+          testID="dateTimePicker"
+          value={date}
+          mode="date"
+          is24Hour={true}
+          display="default"
+          onChange={onDateChange}
+        />
+      )}
       <Text>{date.toLocaleDateString()}</Text>
       <Button title="Save" onPress={register}/>
     </View>
