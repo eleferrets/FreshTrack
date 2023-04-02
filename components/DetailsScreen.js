@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { View, StyleSheet, Button } from 'react-native';
 import {Input} from 'react-native-elements'
-import DateTimePickerModal from "react-native-modal-datetime-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {Text, Platform, DatePickerIOS, DatePickerAndroid } from 'react-native';
 
 const getData = async () => {
   try {
@@ -23,24 +23,38 @@ const storeData = async (value) => {
 }
 
 export default function DetailsScreen({route, navigation}) {
-  const {itemData} = route.params;
+  // const {itemData} = route.params;
+  const itemData = {name: "H", category: "U"};
+  
   const [name, setName] = useState(itemData.name);
   const [category, setCategory] = useState(itemData.category)
-  const [date, setDate] = useState(itemData.date);
+  const [date, setDate] = useState(new Date());
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
-  const showDatePicker = () => {
-    setDatePickerVisibility(true);
+  const showDatePicker = async () => {
+    if (Platform.OS === 'android') {
+      try {
+        const { action, year, month, day } = await DatePickerAndroid.open({
+          date: date,
+        });
+        if (action !== DatePickerAndroid.dismissedAction) {
+          const selectedDate = new Date(year, month, day);
+          setDate(selectedDate);
+        }
+      } catch ({ code, message }) {
+        console.warn('Cannot open date picker', message);
+      }
+    } else if (Platform.OS === 'ios') {
+      // For iOS, use the DatePickerIOS component
+      return (
+        <DatePickerIOS
+          date={date}
+          onDateChange={(newDate) => setDate(newDate)}
+        />
+      );
+    }
   };
 
-  const hideDatePicker = () => {
-    setDatePickerVisibility(false);
-  };
-
-  const handleConfirm = (date) => {
-    setDate(date);
-    hideDatePicker();
-  };
   const register = () => {
     getData().then(value => {
       let arr = value;
@@ -66,13 +80,9 @@ export default function DetailsScreen({route, navigation}) {
       <Input placeholder="Name" value={name} onChangeText={(text) =>setName(text)}/>
       <Input placeholder="Category" value={category} onChangeText={(text) =>setCategory(text)}/>
       {/* Add a profile option as a dropdown of all the profiles added */}
-        <Button title="Show Dates" onPress={showDatePicker} />
-      <DateTimePickerModal
-        isVisible={isDatePickerVisible}
-        mode="date"
-        onConfirm={handleConfirm}
-        onCancel={hideDatePicker}
-      />
+        {/* <Button title="Show Dates" onPress={showDatePicker} /> */}
+      <Button title="Select Date" onPress={showDatePicker} />
+      <Text>{date.toLocaleDateString()}</Text>
       <Button title="Save" onPress={register}/>
     </View>
   );
