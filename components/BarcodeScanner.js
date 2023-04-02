@@ -15,11 +15,12 @@ export default function BarcodeScanner({navigation}) {
     getBarCodeScannerPermissions();
   }, []);
 const manualEntry = () =>{
-    navigation.navigate('Details')
+    navigation.navigate('Details', {itemData: {name: '', category: '', date: ''}})
 }
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
-    const uri = 'https://api.barcodelookup.com/v3/products?barcode='+data+'&formatted=y&key=43eseh8rkbqjmsvwab61hbxybqkw21';
+    const apiKey = '297b3qub6i91ek5lgcagn0yvqmbkbg';
+    const uri = 'https://api.barcodelookup.com/v3/products?barcode='+data+'&formatted=y&key='+apiKey;
     fetch(uri).then(res => res.json()).then(data => {
         navigation.navigate('Details', {itemData: {
                 name: data.products[0].title,
