@@ -1,6 +1,7 @@
 import { Text, View, Button, StyleSheet } from 'react-native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useState} from "react";
+import {Entypo} from "@expo/vector-icons";
 
 const storeData = async (value) => {
     try {
@@ -17,18 +18,6 @@ const deleteItem = async (id) => {
     });
 }
 
-const Item = props => {
-    return(
-        <View>
-            <Text>
-                <Text>{props.name}</Text>
-                <Button title={'Edit'} onPress={() => getData().then(data => props.nav.navigate('Edit', {itemID: props.id, itemData: data[props.id]}))}/>
-                <Button title={'Delete'} onPress={() => {deleteItem(props.id)}}/>
-            </Text>
-        </View>
-    );
-};
-
 const getData = async () => {
     try {
         const jsonValue = await AsyncStorage.getItem('@food_data')
@@ -37,6 +26,18 @@ const getData = async () => {
         // error reading value
     }
 }
+
+const Item = props => {
+    return(
+        <View>
+            <Text>
+                <Text>{props.name}</Text>
+                <Entypo name="edit" size={24} color="black" onPress={() => getData().then(data => props.nav.navigate('Edit', {itemID: props.id, itemData: data[props.id]}))}/>
+                <Entypo name="trash" size={24} color="black" onPress={() => {deleteItem(props.id)}}/>
+            </Text>
+        </View>
+    );
+};
 
 export default function HomeScreen({ route, navigation }) {
     const [foodData, setFoodData] = useState([{category: "", date: "", name: "Nothing"}]);
@@ -58,7 +59,7 @@ export default function HomeScreen({ route, navigation }) {
     const getItems = () => {
         let arr = [];
         for (let i = 0; i < foodData.length; i ++) {
-            arr.push(<Item nav={navigation} id={i} key={i} name={foodData[i].name}/>);
+            arr.push(<Item nav={navigation} id={i} key={i} name={foodData[i].name} category={foodData[i].category} date={foodData[i].date}/>);
         }
         return arr;
     };
