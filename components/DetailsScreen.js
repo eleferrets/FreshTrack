@@ -24,9 +24,7 @@ const storeData = async (value) => {
 }
 
 export default function DetailsScreen({route, navigation}) {
-  // const {itemData} = route.params;
-  const itemData = {name: "H", category: "U"};
-  
+  const {itemData} = route.params;  
   const [name, setName] = useState(itemData.name);
   const [category, setCategory] = useState(itemData.category)
   const [date, setDate] = useState(new Date());
