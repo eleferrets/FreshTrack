@@ -18,6 +18,9 @@ export default function EditScreen({route, navigation}) {
     const register = () => {
         getData().then(value => {
             let arr = value;
+            if (name === "" || category === "") {
+              throw new Error("Name and category cannot be empty");
+            }
             arr[itemID] = {
                 name: name,
                 category: category,
@@ -27,6 +30,8 @@ export default function EditScreen({route, navigation}) {
             storeData(arr).then(() => {
                 navigation.navigate('Home');
             });
+        }).catch(error => {
+          console.log(error.message);
         });
     }
     const styles = StyleSheet.create({
