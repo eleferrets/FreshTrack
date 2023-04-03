@@ -1,4 +1,4 @@
-import { Text, View, Button, StyleSheet, Image } from 'react-native';
+import { Text, View, Button, StyleSheet, Image, ScrollView, Platform } from 'react-native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useState} from "react";
 import {Entypo} from "@expo/vector-icons";
@@ -36,11 +36,11 @@ const getFormattedDate = date => {
     day = day.length > 1 ? day : '0' + day;
     return month + '/' + day + '/' + year;
 }
-
+const phoneText = Platform.OS === 'ios' ? 'Helvetica' : 'Roboto';
 const Item = props => {
     return(
         <View>
-            <Text style={{fontSize: 20, fontFamily: "Verdana"}}>{props.name} - {getFormattedDate(new Date(props.date))}</Text>
+            <Text style={{fontSize: 20, fontFamily: phoneText}}>{props.name} - {getFormattedDate(new Date(props.date))}</Text>
             <Text style={{right:0}}>
                 <Entypo name="edit" size={24} color="#759E58" onPress={() => getData().then(data => props.nav.navigate('Edit', {itemID: props.id, itemData: data[props.id]}))}/>
                 <Entypo name="trash" size={24} color="black" onPress={() => {deleteItem(props.id)}}/>
@@ -84,26 +84,31 @@ export default function HomeScreen({ route, navigation }) {
     };
 
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', position: 'absolute', top: 0 }}>
-        <View>
-            <Image source={logo} alt="Logo" style={{maxWidth:415, maxHeight:125, top: 0}} />
-        </View>
-
-        <View style={{position: 'absolute', top: 150}}>
-            {getItems()}
+        <ScrollView style={{flex: 1}}>
+          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+            <View>
+              <Image source={logo} alt="Logo" style={{maxWidth:415, maxHeight:125, top: 0}} />
+            </View>
       
-        <Button
-            title="Add New Item"
-            onPress={() => navigation.navigate('Details', {itemData: {name: '', category: '', date: ''}})}
-            />
-            <Button
-            title="Scan a Barcode"
-            onPress={() => navigation.navigate('Barcode')}
-            />
-            <Button title={"Clear List"}
-            onPress={() => AsyncStorage.clear()}/>
-      </View>
-       
-      </View>
-    );
+            <View style={{padding: 10}}>
+              {getItems()}
+            </View>
+      
+            <View style={{padding: 10}}>
+              <Button
+                title="Add New Item"
+                onPress={() => navigation.navigate('Details', {itemData: {name: '', category: '', date: ''}})}
+              />
+              <Button
+                title="Scan a Barcode"
+                onPress={() => navigation.navigate('Barcode')}
+              />
+              <Button
+                title={"Clear List"}
+                onPress={() => AsyncStorage.clear()}
+              />
+            </View>
+          </View>
+        </ScrollView>
+      );
   }
