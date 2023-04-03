@@ -27,11 +27,20 @@ const getData = async () => {
     }
 }
 
+const getFormattedDate = date => {
+    let year = date.getFullYear();
+    let month = (1 + date.getMonth()).toString();
+    month = month.length > 1 ? month : '0' + month;
+    let day = date.getDate().toString();
+    day = day.length > 1 ? day : '0' + day;
+    return month + '/' + day + '/' + year;
+}
+
 const Item = props => {
     return(
         <View>
             <Text>
-                <Text>{props.name}</Text>
+                <Text>{props.name} - {getFormattedDate(new Date(props.date))}</Text>
                 <Entypo name="edit" size={24} color="black" onPress={() => getData().then(data => props.nav.navigate('Edit', {itemID: props.id, itemData: data[props.id]}))}/>
                 <Entypo name="trash" size={24} color="black" onPress={() => {deleteItem(props.id)}}/>
             </Text>
@@ -54,7 +63,12 @@ export default function HomeScreen({ route, navigation }) {
         }
       });
 
-    getData().then(value => {setFoodData(value)});
+    getData().then(value => {
+        value.sort((a, b) => {
+            return new Date(b.date) - new Date(a.date);
+        });
+        setFoodData(value);
+    });
 
     const getItems = () => {
         let arr = [];
