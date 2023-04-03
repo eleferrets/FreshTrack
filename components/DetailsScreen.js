@@ -14,6 +14,9 @@ export default function DetailsScreen({route, navigation}) {
   const register = () => {
     getData().then(value => {
       let arr = value;
+      if (name === "" || category === "") {
+        throw new Error("Name and category cannot be empty");
+      }
       arr.push({
             name: name,
             category: category,
@@ -24,6 +27,8 @@ export default function DetailsScreen({route, navigation}) {
       storeData(arr).then(() => {
           navigation.navigate('Home');
       });
+    }).catch(error => {
+      console.log(error.message);
     });
   }
   const styles = StyleSheet.create({

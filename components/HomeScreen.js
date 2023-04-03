@@ -80,7 +80,9 @@ export default function HomeScreen({ route, navigation }) {
 
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <ScrollView style={{flex: 1, padding: 10}}>
           {getItems()}
+        </ScrollView>
       
         <Button
           title="Add new"
