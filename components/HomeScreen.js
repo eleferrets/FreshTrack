@@ -1,7 +1,8 @@
-import { Text, View, Button, StyleSheet } from 'react-native';
+import { Text, View, Button, StyleSheet, Image } from 'react-native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useState} from "react";
 import {Entypo} from "@expo/vector-icons";
+import logo from './banner_logo.png';
 
 const storeData = async (value) => {
     try {
@@ -79,19 +80,26 @@ export default function HomeScreen({ route, navigation }) {
     };
 
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-          {getItems()}
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', position: 'absolute', top: 0 }}>
+        <View>
+            <Image source={logo} alt="Logo" style={{maxWidth:415, maxHeight:125, top: 0}} />
+        </View>
+
+        <View style={{position: 'absolute', top: 150}}>
+            {getItems()}
       
         <Button
-          title="Add new"
-          onPress={() => navigation.navigate('Details', {itemData: {name: '', category: '', date: ''}})}
-        />
-        <Button
-          title="Go to Barcode"
-          onPress={() => navigation.navigate('Barcode')}
-        />
-          <Button title={"Clear storage"}
-          onPress={() => AsyncStorage.clear()}/>
+            title="Add New Item"
+            onPress={() => navigation.navigate('Details', {itemData: {name: '', category: '', date: ''}})}
+            />
+            <Button
+            title="Go to Barcode Scanner"
+            onPress={() => navigation.navigate('Barcode')}
+            />
+            <Button title={"Clear storage"}
+            onPress={() => AsyncStorage.clear()}/>
+      </View>
+       
       </View>
     );
   }
