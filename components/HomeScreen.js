@@ -40,11 +40,12 @@ const getFormattedDate = date => {
 const Item = props => {
     return(
         <View>
-            <Text>
-                <Text>{props.name} - {getFormattedDate(new Date(props.date))}</Text>
-                <Entypo name="edit" size={24} color="black" onPress={() => getData().then(data => props.nav.navigate('Edit', {itemID: props.id, itemData: data[props.id]}))}/>
+            <Text style={{fontSize: 20, fontFamily: "Verdana"}}>{props.name} - {getFormattedDate(new Date(props.date))}</Text>
+            <Text style={{right:0}}>
+                <Entypo name="edit" size={24} color="#759E58" onPress={() => getData().then(data => props.nav.navigate('Edit', {itemID: props.id, itemData: data[props.id]}))}/>
                 <Entypo name="trash" size={24} color="black" onPress={() => {deleteItem(props.id)}}/>
             </Text>
+            <Text></Text>
         </View>
     );
 };
@@ -59,7 +60,7 @@ export default function HomeScreen({ route, navigation }) {
         },
         item: {
           padding: 20,
-          fontSize: 15,
+          fontSize: 25,
           marginTop: 5,
         }
       });
@@ -93,10 +94,10 @@ export default function HomeScreen({ route, navigation }) {
             onPress={() => navigation.navigate('Details', {itemData: {name: '', category: '', date: ''}})}
             />
             <Button
-            title="Go to Barcode Scanner"
+            title="Scan a Barcode"
             onPress={() => navigation.navigate('Barcode')}
             />
-            <Button title={"Clear storage"}
+            <Button title={"Clear List"}
             onPress={() => AsyncStorage.clear()}/>
       </View>
        
