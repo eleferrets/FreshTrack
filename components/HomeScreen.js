@@ -1,7 +1,8 @@
-import { Text, View, Button, StyleSheet } from 'react-native';
+import { Text, View, Button, StyleSheet, Image } from 'react-native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useState} from "react";
 import {Entypo} from "@expo/vector-icons";
+import logo from './banner_logo.png';
 
 const storeData = async (value) => {
     try {
@@ -39,11 +40,12 @@ const getFormattedDate = date => {
 const Item = props => {
     return(
         <View>
-            <Text>
-                <Text>{props.name} - {getFormattedDate(new Date(props.date))}</Text>
-                <Entypo name="edit" size={24} color="black" onPress={() => getData().then(data => props.nav.navigate('Edit', {itemID: props.id, itemData: data[props.id]}))}/>
+            <Text style={{fontSize: 20, fontFamily: "Verdana"}}>{props.name} - {getFormattedDate(new Date(props.date))}</Text>
+            <Text style={{right:0}}>
+                <Entypo name="edit" size={24} color="#759E58" onPress={() => getData().then(data => props.nav.navigate('Edit', {itemID: props.id, itemData: data[props.id]}))}/>
                 <Entypo name="trash" size={24} color="black" onPress={() => {deleteItem(props.id)}}/>
             </Text>
+            <Text></Text>
         </View>
     );
 };
@@ -58,12 +60,15 @@ export default function HomeScreen({ route, navigation }) {
         },
         item: {
           padding: 20,
-          fontSize: 15,
+          fontSize: 25,
           marginTop: 5,
         }
       });
 
     getData().then(value => {
+        for (let i = 0; i < value.length; i ++) {
+            value[i].id = i;
+        }
         value.sort((a, b) => {
             return new Date(b.date) - new Date(a.date);
         });
@@ -73,27 +78,32 @@ export default function HomeScreen({ route, navigation }) {
     const getItems = () => {
         let arr = [];
         for (let i = 0; i < foodData.length; i ++) {
-            arr.push(<Item nav={navigation} id={i} key={i} name={foodData[i].name} category={foodData[i].category} date={foodData[i].date}/>);
+            arr.push(<Item nav={navigation} id={foodData[i].id} key={i} name={foodData[i].name} category={foodData[i].category} date={foodData[i].date}/>);
         }
         return arr;
     };
 
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <ScrollView style={{flex: 1, padding: 10}}>
-          {getItems()}
-        </ScrollView>
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', position: 'absolute', top: 0 }}>
+        <View>
+            <Image source={logo} alt="Logo" style={{maxWidth:415, maxHeight:125, top: 0}} />
+        </View>
+
+        <View style={{position: 'absolute', top: 150}}>
+            {getItems()}
       
         <Button
-          title="Add new"
-          onPress={() => navigation.navigate('Details', {itemData: {name: '', category: '', date: ''}})}
-        />
-        <Button
-          title="Go to Barcode"
-          onPress={() => navigation.navigate('Barcode')}
-        />
-          <Button title={"Clear storage"}
-          onPress={() => AsyncStorage.clear()}/>
+            title="Add New Item"
+            onPress={() => navigation.navigate('Details', {itemData: {name: '', category: '', date: ''}})}
+            />
+            <Button
+            title="Scan a Barcode"
+            onPress={() => navigation.navigate('Barcode')}
+            />
+            <Button title={"Clear List"}
+            onPress={() => AsyncStorage.clear()}/>
+      </View>
+       
       </View>
     );
   }

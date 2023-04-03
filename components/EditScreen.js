@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import {Text, View, StyleSheet, Button } from 'react-native';
+import {Text, View, StyleSheet, Button, Image } from 'react-native';
 import {Input} from 'react-native-elements'
 import {useFoodData} from './useFoodData';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import logo from './banner_logo.png';
 
 
 export default function EditScreen({route, navigation}) {
@@ -34,9 +35,12 @@ export default function EditScreen({route, navigation}) {
         },
     });
     return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', position: "absolute", top:0 }}>
+      <View>
+            <Image source={logo} alt="Logo" style={{maxWidth:415, maxHeight:125, top: 0}} />
+        </View>
       <Input placeholder="Name" value={name} onChangeText={(text) =>setName(text)}/>
-      <Input placeholder="Category" value={category} onChangeText={(text) =>setCategory(text)}/>
+      <Input placeholder="Kichen Location" value={category} onChangeText={(text) =>setCategory(text)}/>
       {/* Add a profile option as a dropdown of all the profiles added */}
         {/* <Button title="Show Dates" onPress={showDatePicker} /> */}
         <Button title="Select Date" onPress={showPicker} />
