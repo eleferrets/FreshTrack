@@ -66,6 +66,9 @@ export default function HomeScreen({ route, navigation }) {
       });
 
     getData().then(value => {
+        for (let i = 0; i < value.length; i ++) {
+            value[i].id = i;
+        }
         value.sort((a, b) => {
             return new Date(b.date) - new Date(a.date);
         });
@@ -75,7 +78,7 @@ export default function HomeScreen({ route, navigation }) {
     const getItems = () => {
         let arr = [];
         for (let i = 0; i < foodData.length; i ++) {
-            arr.push(<Item nav={navigation} id={i} key={i} name={foodData[i].name} category={foodData[i].category} date={foodData[i].date}/>);
+            arr.push(<Item nav={navigation} id={foodData[i].id} key={i} name={foodData[i].name} category={foodData[i].category} date={foodData[i].date}/>);
         }
         return arr;
     };
