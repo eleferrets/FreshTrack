@@ -37,18 +37,47 @@ const getFormattedDate = date => {
     return month + '/' + day + '/' + year;
 }
 const phoneText = Platform.OS === 'ios' ? 'Helvetica' : 'Roboto';
-const Item = props => {
-    return(
-        <View>
-            <Text style={{fontSize: 20, fontFamily: phoneText}}>{props.name} - {getFormattedDate(new Date(props.date))}</Text>
-            <Text style={{right:0}}>
-                <Entypo name="edit" size={24} color="#759E58" onPress={() => getData().then(data => props.nav.navigate('Edit', {itemID: props.id, itemData: data[props.id]}))}/>
-                <Entypo name="trash" size={24} color="black" onPress={() => {deleteItem(props.id)}}/>
-            </Text>
-            <Text></Text>
-        </View>
-    );
+const Item = (props) => {
+  // Define an array of background colors
+  const bgColors = ['#ccc', '#f5f5f5'];
+
+  // Calculate the index of the background color based on the item's index
+  // const bgColorIndex = props.index % bgColors.length;
+  return (
+    <View style={{ backgroundColor: bgColors[0], borderRadius: 10, padding: 10 }}>
+      <View>
+        <Text style={{ fontSize: 20, fontFamily: phoneText }}>
+          {props.name} - {getFormattedDate(new Date(props.date))}
+        </Text>
+        <Text style={{ right: 0 }}>
+          <Entypo
+            name="edit"
+            size={24}
+            color="#759E58"
+            onPress={() =>
+              getData().then((data) =>
+                props.nav.navigate('Edit', {
+                  itemID: props.id,
+                  itemData: data[props.id],
+                })
+              )
+            }
+          />
+          <Entypo
+            name="trash"
+            size={24}
+            color="black"
+            onPress={() => {
+              deleteItem(props.id);
+            }}
+          />
+        </Text>
+        <Text></Text>
+      </View>
+    </View>
+  );
 };
+
 
 export default function HomeScreen({ route, navigation }) {
     const [foodData, setFoodData] = useState([{category: "", date: "", name: ""}]);
