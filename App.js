@@ -13,8 +13,8 @@ const Tab = createBottomTabNavigator();
 
 function HomeStack() {
   return (
-    <Stack.Navigator initialRouteName="Home">
-      <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Home' }} />
+    <Stack.Navigator>
+      <Stack.Screen name="Dashboard" component={HomeScreen} options={{headerShown: false}} />
       <Stack.Screen name="Edit" component={EditScreen} />
     </Stack.Navigator>
   );
