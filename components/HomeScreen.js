@@ -3,6 +3,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useState} from "react";
 import {Entypo} from "@expo/vector-icons";
 import logo from './banner_logo.png';
+import { cancelNotification } from './Notifications';
+
 
 const storeData = async (value) => {
     try {

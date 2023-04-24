@@ -17,10 +17,7 @@ const getNotificationId = () => {
 };
 
 export const scheduleNotification = async (title, body, date) => {
-  const trigger = new Date(date);
-  trigger.setHours(12);
-  trigger.setMinutes(0);
-  trigger.setSeconds(0);
+    const trigger = new Date(date + 6000); // Schedule the notification 1 minute in the future
 
   const id = getNotificationId();
 
@@ -30,13 +27,8 @@ export const scheduleNotification = async (title, body, date) => {
       body: body,
       data: { id },
     },
-    trigger: {
-      year: trigger.getFullYear(),
-      month: trigger.getMonth(),
-      day: trigger.getDate(),
-      hour: trigger.getHours(),
-      minute: trigger.getMinutes(),
-    },
+    trigger: trigger,
+
   });
 
   return id;

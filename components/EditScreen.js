@@ -4,6 +4,8 @@ import {Input} from 'react-native-elements'
 import {useFoodData} from './useFoodData';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import logo from './banner_logo.png';
+import { updateNotification } from './Notifications';
+
 
 
 export default function EditScreen({route, navigation}) {
