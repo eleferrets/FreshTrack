@@ -30,21 +30,21 @@ export default function App() {
 
             if (route.name === 'Home') {
               iconName = focused ? 'home' : 'home-outline';
-            } else if (route.name === 'Details') {
-              iconName = focused ? 'information-circle' : 'information-circle-outline';
-            } else if (route.name === 'Barcode') {
+            } else if (route.name === 'Add New Item') {
+              iconName = focused ? 'add-circle-outline' : 'add-circle-outline';
+            } else if (route.name === 'Scan Barcode') {
               iconName = focused ? 'barcode' : 'barcode-outline';
             }
 
             return <Ionicons name={iconName} size={size} color={color} />;
           },
-          tabBarActiveTintColor: 'tomato',
+          tabBarActiveTintColor: 'green',
           tabBarInactiveTintColor: 'gray',
         })}
       >
         <Tab.Screen name="Home" component={HomeStack} />
-        <Tab.Screen name="Details" component={DetailsScreen} />
-        <Tab.Screen name="Barcode" component={BarcodeScanner} />
+        <Tab.Screen name="Add New Item" component={DetailsScreen} />
+        <Tab.Screen name="Scan Barcode" component={BarcodeScanner} />
       </Tab.Navigator>
     </NavigationContainer>
   );

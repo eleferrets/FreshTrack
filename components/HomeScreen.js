@@ -96,14 +96,6 @@ export default function HomeScreen({ route, navigation }) {
       
             <View style={{padding: 10}}>
               <Button
-                title="Add New Item"
-                onPress={() => navigation.navigate('Details', {itemData: {name: '', category: '', date: ''}})}
-              />
-              <Button
-                title="Scan a Barcode"
-                onPress={() => navigation.navigate('Barcode')}
-              />
-              <Button
                 title={"Clear List"}
                 onPress={() => AsyncStorage.clear()}
               />
