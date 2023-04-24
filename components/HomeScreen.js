@@ -35,16 +35,24 @@ const getFormattedDate = date => {
     let day = date.getDate().toString();
     day = day.length > 1 ? day : '0' + day;
     return month + '/' + day + '/' + year;
-}
-const phoneText = Platform.OS === 'ios' ? 'Helvetica' : 'Roboto';
-const Item = (props) => {
-  // Define an array of background colors
-  const bgColors = ['#ccc', '#f5f5f5'];
+  }
+  const Item = (props) => {
+  const phoneText = Platform.OS === 'ios' ? 'Helvetica' : 'Roboto';
+// Calculate the time difference between the current date and the date passed in the props
+const timeDiff = new Date(props.date).getTime() - new Date().getTime();
+const dayDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
-  // Calculate the index of the background color based on the item's index
-  // const bgColorIndex = props.index % bgColors.length;
+// Define the background color based on the time difference
+let bgColor = '#ccc';
+if (dayDiff > 7) {
+  bgColor = '#ccc';
+} else if (dayDiff > 1) {
+  bgColor = 'yellow';
+} else {
+  bgColor = 'red';
+}
   return (
-    <View style={{ backgroundColor: bgColors[0], borderRadius: 10, padding: 10 }}>
+    <View style={{ backgroundColor: bgColor, borderRadius: 10, padding: 10 }}>
       <View>
         <Text style={{ fontSize: 20, fontFamily: phoneText }}>
           {props.name} - {getFormattedDate(new Date(props.date))}
