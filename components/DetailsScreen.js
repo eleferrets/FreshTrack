@@ -6,7 +6,9 @@ import {useFoodData} from './useFoodData';
 import logo from './banner_logo.png';
 
 export default function DetailsScreen({route, navigation}) {
-  const {itemData} = route.params;  
+  let itemData = {name: '', category: '', date: ''};
+  if (route.params) itemData = route.params.itemData;  
+  // if (!itemData) itemData = {name: '', category: '', date: ''};
   const [name, setName] = useState(itemData.name);
   const [category, setCategory] = useState(itemData.category)
 
