@@ -1,6 +1,6 @@
 import { Text, View, Button, StyleSheet, Image, ScrollView, Platform } from 'react-native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {useState} from "react";
+import {useState, useEffect, useCallback} from "react";
 import {Entypo} from "@expo/vector-icons";
 import logo from './banner_logo.png';
 import { cancelNotification } from './Notifications';
@@ -91,28 +91,57 @@ if (dayDiff > 7) {
 
 export default function HomeScreen({ route, navigation }) {
     const [foodData, setFoodData] = useState([{category: "", date: "", name: ""}]);
+    const [sortByClosest, setSortByClosest] = useState(true);
+    const [dataChanged, setDataChanged] = useState(false);
 
     const styles = StyleSheet.create({
-        container: {
-          flex: 1,
-          padding: 50,
-        },
-        item: {
-          padding: 20,
-          fontSize: 25,
-          marginTop: 5,
-        }
-      });
+      container: {
+        flex: 1,
+        padding: 50,
+      },
+      item: {
+        padding: 20,
+        fontSize: 25,
+        marginTop: 5,
+      }
+    });
 
-    getData().then(value => {
+    const toggleSort = () => {
+      setSortByClosest(!sortByClosest);
+    };
+    
+    const getSortedItems = useCallback(() => {
+      let sortedData = [...foodData];
+  
+      sortedData.sort((a, b) => {
+        const dateA = new Date(a.date);
+        const dateB = new Date(b.date);
+        const timeDiffA = Math.abs(dateA.getTime() - new Date().getTime());
+        const timeDiffB = Math.abs(dateB.getTime() - new Date().getTime());
+        return sortByClosest ? timeDiffA - timeDiffB : timeDiffB - timeDiffA;
+      });
+  
+      return sortedData.map((item, index) => (
+        <Item nav={navigation} id={index} key={index} {...item} />
+      ));
+    }, [foodData, sortByClosest]);
+  
+    useEffect(() => {
+      getData().then(value => {
         for (let i = 0; i < value.length; i ++) {
-            value[i].id = i;
+          value[i].id = i;
         }
         value.sort((a, b) => {
-            return new Date(b.date) - new Date(a.date);
+          return new Date(b.date) - new Date(a.date);
         });
         setFoodData(value);
-    });
+      });
+    }, []);
+    
+    
+    
+
+
 
     const getItems = () => {
         let arr = [];
@@ -123,8 +152,8 @@ export default function HomeScreen({ route, navigation }) {
     };
 
     return (
-        <ScrollView style={{flex: 1}}>
-          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+      <ScrollView style={{ flex: 1 }}>
+        <View style={{ alignItems: "center", justifyContent: "center" }}>
             <View>
               <Image source={logo} alt="Logo" style={{maxWidth:415, maxHeight:125, top: 0}} />
             </View>
@@ -132,22 +161,13 @@ export default function HomeScreen({ route, navigation }) {
             <View style={{padding: 10}}>
               {getItems()}
             </View>
-      
-            <View style={{padding: 10}}>
-              <Button
-                title="Add New Item"
-                onPress={() => navigation.navigate('Details', {itemData: {name: '', category: '', date: ''}})}
-              />
-              <Button
-                title="Scan a Barcode"
-                onPress={() => navigation.navigate('Barcode')}
-              />
-              <Button
-                title={"Clear List"}
-                onPress={() => AsyncStorage.clear()}
-              />
-            </View>
+          <View style={{ padding: 10 }}>
+            <Button title="Add New Item" onPress={() => navigation.navigate("Details", { itemData: { name: "", category: "", date: "" } })} />
+            <Button title="Scan a Barcode" onPress={() => navigation.navigate("Barcode")} />
+            <Button title={"Clear List"} onPress={() => AsyncStorage.clear()} />
+            <Button title={sortByClosest ? "Sort by Farthest" : "Sort by Closest"} onPress={toggleSort} />
           </View>
-        </ScrollView>
-      );
+        </View>
+      </ScrollView>
+    );
   }
