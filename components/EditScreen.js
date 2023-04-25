@@ -30,7 +30,7 @@ export default function EditScreen({route, navigation}) {
             };
 
             storeData(arr).then(() => {
-                navigation.navigate('Home');
+                navigation.navigate('Dashboard');
             });
         }).catch(error => {
           console.log(error.message);
