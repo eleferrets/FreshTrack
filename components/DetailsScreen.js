@@ -4,6 +4,8 @@ import {Input} from 'react-native-elements'
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {useFoodData} from './useFoodData';
 import logo from './banner_logo.png';
+import { scheduleNotification} from './Notifications';
+
 
 export default function DetailsScreen({route, navigation}) {
   let itemData = {name: '', category: '', date: ''};
@@ -14,26 +16,33 @@ export default function DetailsScreen({route, navigation}) {
 
   const {date, setDate, showDatePicker, setShowDatePicker, onDateChange, showPicker, getData, storeData} = useFoodData();
 
-  const register = () => {
-    getData().then(value => {
+  const register = async () => {
+    try {
+      const value = await getData();
       let arr = value;
       if (name === "" || category === "") {
         throw new Error("Name and category cannot be empty");
       }
+      const notificationTitle = 'Reminder';
+      const notificationBody = `${name} is set to expire!`;
+      const notificationDate = date;
+      
+      const notificationId = await scheduleNotification(notificationTitle, notificationBody);
       arr.push({
-            name: name,
-            category: category,
-            date: date.toString()
+        name: name,
+        category: category,
+        date: date.toString(),
+        notify: notificationId
       });
-      //console.log(arr);
-
-      storeData(arr).then(() => {
-          navigation.navigate('Home');
-      });
-    }).catch(error => {
+      console.log(arr);
+      
+      await storeData(arr);
+      navigation.navigate('Home');
+    } catch (error) {
       console.log(error.message);
-    });
-  }
+    }
+  };
+  
   const styles = StyleSheet.create({
     datePickerStyle: {
       width: 230,
